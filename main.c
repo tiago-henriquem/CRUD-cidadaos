@@ -22,6 +22,8 @@ void menuPesquisarPorCodigo(int *contador, Cidadao cidadaos[]);
 
 void menuAtualizarCadastro(int *contador, Cidadao cidadaos[]);
 
+void menuExcluirCadastro(int *contador, Cidadao cidadaos[]);
+
 void imprimeCidadao(int *contador, Cidadao cidadaos[]);
 
 
@@ -66,7 +68,9 @@ void menuCidadao(int *contador, Cidadao cidadaos[]) {
     menuPesquisarPorCodigo(contador, cidadaos);
   } else if(strcmp(resposta, "3")==0) {
     menuAtualizarCadastro(contador, cidadaos);
-  }else if(strcmp(resposta,"0")==0) {
+  } else if(strcmp(resposta, "4")==0) {
+    menuExcluirCadastro(contador, cidadaos);
+  } else if(strcmp(resposta,"0")==0) {
     menuInicial(contador, cidadaos);
   } else {
     printf("Escolha uma opção válida!");
@@ -183,5 +187,41 @@ void menuAtualizarCadastro(int *contador, Cidadao cidadaos[]) {
       printf("\nOpção inválida. Tente novamente. \n");
       menuAtualizarCadastro(contador, cidadaos);
     }
+  }
+}
+
+void menuExcluirCadastro(int *contador, Cidadao cidadaos[]) {
+  /* Variáveis de interação */
+  int excluirCodigoInformado, excluirPosicaoCidadaoExistente, i;
+  char excluirResposta[2];
+  printf("\n\nentrou \n\n");
+  printf("\nQual é o código do usuário que deseja excluir? ");
+  scanf("%i", &excluirCodigoInformado);
+  excluirPosicaoCidadaoExistente = verificaCodigoExistente(contador, cidadaos, excluirCodigoInformado);
+  if(excluirPosicaoCidadaoExistente!=-1) {
+    printf("Tem certeza que deseja excluir?\n");
+    printf("S - Sim\n");
+    printf("N - Não\n");
+    scanf("%s", excluirResposta);
+    if(strcmp(excluirResposta, "S")==0) {
+      for(i=excluirPosicaoCidadaoExistente; i<*contador-1; i++) {
+        strcpy(cidadaos[i].nome,cidadaos[i+1].nome);
+        cidadaos[i].idade = cidadaos[i+1].idade;
+        cidadaos[i].codigo = cidadaos[i+1].codigo;
+        strcpy(cidadaos[i].uf,cidadaos[i+1].uf);
+      }
+      *contador -= 1;
+      printf("Usuário excluído com sucesso!");
+      menuCidadao(contador, cidadaos);
+    } else if(strcmp(excluirResposta, "N")==0) {
+      printf("Nenhum usuário foi excluído.\n");
+      menuCidadao(contador, cidadaos);
+    } else {
+      printf("Opção inválida. Tente novamente.\n");
+      menuCidadao(contador, cidadaos);
+    }
+  } else {
+    printf("\nUsuário não encontrado no sistema. Tente novamente.\n");
+    menuCidadao(contador, cidadaos);
   }
 }
