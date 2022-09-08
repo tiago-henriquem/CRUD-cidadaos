@@ -2,6 +2,7 @@
 #include<string.h>
 
 #define MAX_cidadaos 3
+#define MAX_FILA 100
 
 typedef struct {
   char nome[31];
@@ -10,34 +11,40 @@ typedef struct {
   char uf[3];
 } Cidadao;
 
-void menuInicial(int *contador, Cidadao cidadaos[]);
+typedef struct {
+  int codigoCidadao;
+  char tipoAtendimento[12];
+  int senha;
+} Fila;
 
-void menuCidadao(int *contador, Cidadao cidadaos[]);
+void menuInicial(int *contador, Cidadao cidadaos[], Fila fila[]);
 
-void cadastraCidadao(int *contador, Cidadao cidadaos[]);
+void menuCidadao(int *contador, Cidadao cidadaos[], Fila fila[]);
+
+void cadastraCidadao(int *contador, Cidadao cidadaos[], Fila fila[]);
 
 int verificaCodigoExistente(int *contador, Cidadao cidadaos[], int codigo);
 
-void menuPesquisarPorCodigo(int *contador, Cidadao cidadaos[]);
+void menuPesquisarPorCodigo(int *contador, Cidadao cidadaos[], Fila fila[]);
 
-void menuAtualizarCadastro(int *contador, Cidadao cidadaos[]);
+void menuAtualizarCadastro(int *contador, Cidadao cidadaos[], Fila fila[]);
 
-void menuExcluirCadastro(int *contador, Cidadao cidadaos[]);
+void menuExcluirCadastro(int *contador, Cidadao cidadaos[], Fila fila[]);
 
-void imprimeCidadao(int *contador, Cidadao cidadaos[]);
+void imprimeCidadao(int *contador, Cidadao cidadaos[], Fila fila[]);
 
 
 int main() {
   int i=0;
   Cidadao cidadaos[MAX_cidadaos];
-  menuInicial(&i, cidadaos);
+  Fila fila[MAX_FILA];
+  menuInicial(&i, cidadaos, fila);
   return 0;
 }
 
-void menuInicial(int *contador, Cidadao cidadaos[]) {
+void menuInicial(int *contador, Cidadao cidadaos[], Fila fila[]) {
   /* essa função recebe o valor do ponteiro *contador */
   char resposta[2];
-  printf("\nOlha o contador menu inicial: %i\n\n", *contador);
   printf("\n1 CIDADÂO\n");
   printf("2 GERAR SENHA\n");
   printf("3 ATENDIMENTO AO CIDADÂO\n");
@@ -45,16 +52,16 @@ void menuInicial(int *contador, Cidadao cidadaos[]) {
   scanf("%s", resposta);
   if(strcmp(resposta, "1")==0) {
     /* passa para a função menuCidadao o endereço do ponteiro *contador */
-    menuCidadao(contador, cidadaos);
+    menuCidadao(contador, cidadaos, fila);
   } else if(strcmp(resposta,"S")==0) {
     printf("Saindo...\n");
   } else {
     printf("Escolha uma opção válida!");
-    menuInicial(contador, cidadaos);
+    menuInicial(contador, cidadaos, fila);
   }
 }
 
-void menuCidadao(int *contador, Cidadao cidadaos[]) {
+void menuCidadao(int *contador, Cidadao cidadaos[], Fila fila[]) {
   char resposta[2];
   printf("\n1 CADASTRAR\n");
   printf("2 PESQUISAR POR CÒDIGO\n");
@@ -63,22 +70,22 @@ void menuCidadao(int *contador, Cidadao cidadaos[]) {
   printf("0 VOLTAR\n\n");
   scanf("%s", resposta);
   if(strcmp(resposta, "1")==0) {
-    cadastraCidadao(contador, cidadaos);
+    cadastraCidadao(contador, cidadaos, fila);
   } else if(strcmp(resposta, "2")==0) {
-    menuPesquisarPorCodigo(contador, cidadaos);
+    menuPesquisarPorCodigo(contador, cidadaos, fila);
   } else if(strcmp(resposta, "3")==0) {
-    menuAtualizarCadastro(contador, cidadaos);
+    menuAtualizarCadastro(contador, cidadaos, fila);
   } else if(strcmp(resposta, "4")==0) {
-    menuExcluirCadastro(contador, cidadaos);
+    menuExcluirCadastro(contador, cidadaos, fila);
   } else if(strcmp(resposta,"0")==0) {
-    menuInicial(contador, cidadaos);
+    menuInicial(contador, cidadaos, fila);
   } else {
     printf("Escolha uma opção válida!");
-    menuCidadao(contador, cidadaos);
+    menuCidadao(contador, cidadaos, fila);
   }
 }
 
-void cadastraCidadao(int *contador, Cidadao cidadaos[]) {
+void cadastraCidadao(int *contador, Cidadao cidadaos[], Fila fila[]) {
   int idade, codigo, codigoExiste;
   char nome[31], uf[3];
   printf("Informe o nome: ");
@@ -97,20 +104,20 @@ void cadastraCidadao(int *contador, Cidadao cidadaos[]) {
     cidadaos[*contador].codigo = codigo;
     strcpy(cidadaos[*contador].uf, uf);
     *contador += 1;
-    imprimeCidadao(contador, cidadaos);
+    imprimeCidadao(contador, cidadaos, fila);
   } else {
     printf("O código informado já está cadastrado.\n Faça um novo cadastro inserindo um código diferente.\n");
-    menuCidadao(contador, cidadaos);
+    menuCidadao(contador, cidadaos, fila);
   }
 }
 
-void imprimeCidadao(int *contador, Cidadao cidadaos[]) {
+void imprimeCidadao(int *contador, Cidadao cidadaos[], Fila fila[]) {
   printf("\n contador: %i\n", *contador);
   printf("Nome: %s\n", cidadaos[*contador-1].nome);
   printf("Idade: %i\n", cidadaos[*contador-1].idade);
   printf("Codigo: %i\n", cidadaos[*contador-1].codigo);
   printf("UF: %s\n", cidadaos[*contador-1].uf);
-  menuCidadao(contador, cidadaos);
+  menuCidadao(contador, cidadaos, fila);
 }
 
 /* Retorna -1 caso não exista o cidadão no sistema. Do contrário, retorna a posição dele */
@@ -124,7 +131,7 @@ int verificaCodigoExistente(int *contador, Cidadao cidadaos[], int codigo) {
   return -1;
 }
 
-void menuPesquisarPorCodigo(int *contador, Cidadao cidadaos[]) {
+void menuPesquisarPorCodigo(int *contador, Cidadao cidadaos[], Fila fila[]) {
   int codigoInformado, posicaoCidadaoExistente;
   printf("Informe o código do cidadão que deseja buscar no sistema: ");
   scanf("%i", &codigoInformado);
@@ -136,14 +143,14 @@ void menuPesquisarPorCodigo(int *contador, Cidadao cidadaos[]) {
     printf("Idade: %i\n", cidadaos[posicaoCidadaoExistente].idade);
     printf("Codigo: %i\n", cidadaos[posicaoCidadaoExistente].codigo);
     printf("UF: %s\n", cidadaos[posicaoCidadaoExistente].uf);
-    menuCidadao(contador, cidadaos);
+    menuCidadao(contador, cidadaos, fila);
   } else {
     printf("O código informado não existe. Tente novamente.\n");
-    menuCidadao(contador, cidadaos);
+    menuCidadao(contador, cidadaos, fila);
   }
 }
 
-void menuAtualizarCadastro(int *contador, Cidadao cidadaos[]) {
+void menuAtualizarCadastro(int *contador, Cidadao cidadaos[], Fila fila[]) {
   /* Variáveis de interação */
   int atualizarCodigoInformado, atualizarPosicaoCidadaoExistente;
   char atualizarResposta[2];
@@ -157,7 +164,7 @@ void menuAtualizarCadastro(int *contador, Cidadao cidadaos[]) {
   /* Se existir, pergunta ao usuário o campo que deseja alterar */
   if(atualizarPosicaoCidadaoExistente==-1) {
     printf("\nUsuário não encontrado no sistema. Tente novamente.\n");
-    menuCidadao(contador, cidadaos);
+    menuCidadao(contador, cidadaos, fila);
   } else {
     printf("\nQual campo deseja alterar?\n");
     printf("N - Nome\n");
@@ -170,27 +177,27 @@ void menuAtualizarCadastro(int *contador, Cidadao cidadaos[]) {
       scanf("%s", novoNome);
       strcpy(cidadaos[atualizarPosicaoCidadaoExistente].nome,novoNome);
       printf("\nCampo atualizado com sucesso!\n");
-      menuCidadao(contador, cidadaos);
+      menuCidadao(contador, cidadaos, fila);
     } else if(strcmp(atualizarResposta, "I")==0) {
       printf("\nInforme a nova idade: ");
       scanf("%i", &novaIdade);
       cidadaos[atualizarPosicaoCidadaoExistente].idade = novaIdade;
       printf("\nCampo atualizado com sucesso!\n");
-      menuCidadao(contador, cidadaos);
+      menuCidadao(contador, cidadaos, fila);
     } else if(strcmp(atualizarResposta, "U")==0) {
       printf("\nInforme a nova UF: ");
       scanf("%s", novaUF);
       strcpy(cidadaos[atualizarPosicaoCidadaoExistente].uf,novaUF);
       printf("\nCampo atualizado com sucesso!\n");
-      menuCidadao(contador, cidadaos);
+      menuCidadao(contador, cidadaos, fila);
     } else {
       printf("\nOpção inválida. Tente novamente. \n");
-      menuAtualizarCadastro(contador, cidadaos);
+      menuAtualizarCadastro(contador, cidadaos, fila);
     }
   }
 }
 
-void menuExcluirCadastro(int *contador, Cidadao cidadaos[]) {
+void menuExcluirCadastro(int *contador, Cidadao cidadaos[], Fila fila[]) {
   /* Variáveis de interação */
   int excluirCodigoInformado, excluirPosicaoCidadaoExistente, i;
   char excluirResposta[2];
@@ -212,16 +219,16 @@ void menuExcluirCadastro(int *contador, Cidadao cidadaos[]) {
       }
       *contador -= 1;
       printf("Usuário excluído com sucesso!");
-      menuCidadao(contador, cidadaos);
+      menuCidadao(contador, cidadaos, fila);
     } else if(strcmp(excluirResposta, "N")==0) {
       printf("Nenhum usuário foi excluído.\n");
-      menuCidadao(contador, cidadaos);
+      menuCidadao(contador, cidadaos, fila);
     } else {
       printf("Opção inválida. Tente novamente.\n");
-      menuCidadao(contador, cidadaos);
+      menuCidadao(contador, cidadaos, fila);
     }
   } else {
     printf("\nUsuário não encontrado no sistema. Tente novamente.\n");
-    menuCidadao(contador, cidadaos);
+    menuCidadao(contador, cidadaos, fila);
   }
 }
