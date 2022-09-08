@@ -1,6 +1,10 @@
 #include<stdio.h>
 #include<string.h>
-
+/*
+  Nota:
+    -> variáveis de alteração: são variáveis que vão alterar os elementos principais da aplicação (cidadãos e filas)
+    -> variáveis de interação: são variáveis cujos valores são obtidos pela interação com o usuário (variáveis de resposta)
+*/
 #define MAX_cidadaos 3
 #define MAX_FILA 100
 
@@ -31,6 +35,8 @@ void menuAtualizarCadastro(int *contador, Cidadao cidadaos[], Fila fila[]);
 
 void menuExcluirCadastro(int *contador, Cidadao cidadaos[], Fila fila[]);
 
+void menuGerarSenha(int *contador, Cidadao cidadaos[], Fila fila[]);
+
 void imprimeCidadao(int *contador, Cidadao cidadaos[], Fila fila[]);
 
 
@@ -53,6 +59,8 @@ void menuInicial(int *contador, Cidadao cidadaos[], Fila fila[]) {
   if(strcmp(resposta, "1")==0) {
     /* passa para a função menuCidadao o endereço do ponteiro *contador */
     menuCidadao(contador, cidadaos, fila);
+  } else if(strcmp(resposta, "2")==0) {
+    menuGerarSenha(contador, cidadaos, fila);
   } else if(strcmp(resposta,"S")==0) {
     printf("Saindo...\n");
   } else {
@@ -231,4 +239,10 @@ void menuExcluirCadastro(int *contador, Cidadao cidadaos[], Fila fila[]) {
     printf("\nUsuário não encontrado no sistema. Tente novamente.\n");
     menuCidadao(contador, cidadaos, fila);
   }
+}
+
+void menuGerarSenha(int *contador, Cidadao cidadaos[], Fila fila[]) {
+  /* Variáveis de alteração */
+  int codigoCidadao, senha;
+  char tipoAtendimento[12];
 }
