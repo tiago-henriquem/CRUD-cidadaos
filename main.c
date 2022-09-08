@@ -20,6 +20,8 @@ int verificaCodigoExistente(int *contador, Cidadao cidadaos[], int codigo);
 
 void menuPesquisarPorCodigo(int *contador, Cidadao cidadaos[]);
 
+void menuAtualizarCadastro(int *contador, Cidadao cidadaos[]);
+
 void imprimeCidadao(int *contador, Cidadao cidadaos[]);
 
 
@@ -62,7 +64,9 @@ void menuCidadao(int *contador, Cidadao cidadaos[]) {
     cadastraCidadao(contador, cidadaos);
   } else if(strcmp(resposta, "2")==0) {
     menuPesquisarPorCodigo(contador, cidadaos);
-  } else if(strcmp(resposta,"0")==0) {
+  } else if(strcmp(resposta, "3")==0) {
+    menuAtualizarCadastro(contador, cidadaos);
+  }else if(strcmp(resposta,"0")==0) {
     menuInicial(contador, cidadaos);
   } else {
     printf("Escolha uma opção válida!");
@@ -132,5 +136,52 @@ void menuPesquisarPorCodigo(int *contador, Cidadao cidadaos[]) {
   } else {
     printf("O código informado não existe. Tente novamente.\n");
     menuCidadao(contador, cidadaos);
+  }
+}
+
+void menuAtualizarCadastro(int *contador, Cidadao cidadaos[]) {
+  /* Variáveis de interação */
+  int atualizarCodigoInformado, atualizarPosicaoCidadaoExistente;
+  char atualizarResposta[2];
+  /* Variáveis de alteração */
+  int novaIdade;
+  char novoNome[31], novaUF[3];
+  printf("\nQual é o código do usuário que deseja atualizar? ");
+  scanf("%i", &atualizarCodigoInformado);
+  /* Verifica se existe e caso existir, armazena a posição em que se encontra */
+  atualizarPosicaoCidadaoExistente = verificaCodigoExistente(contador, cidadaos, atualizarCodigoInformado);
+  /* Se existir, pergunta ao usuário o campo que deseja alterar */
+  if(atualizarPosicaoCidadaoExistente==-1) {
+    printf("\nUsuário não encontrado no sistema. Tente novamente.\n");
+    menuCidadao(contador, cidadaos);
+  } else {
+    printf("\nQual campo deseja alterar?\n");
+    printf("N - Nome\n");
+    printf("I - Idade\n");
+    printf("U - UF\n");
+    scanf("%s", atualizarResposta);
+
+    if(strcmp(atualizarResposta, "N")==0) {
+      printf("\nInforme o novo nome: ");
+      scanf("%s", novoNome);
+      strcpy(cidadaos[atualizarPosicaoCidadaoExistente].nome,novoNome);
+      printf("\nCampo atualizado com sucesso!\n");
+      menuCidadao(contador, cidadaos);
+    } else if(strcmp(atualizarResposta, "I")==0) {
+      printf("\nInforme a nova idade: ");
+      scanf("%i", &novaIdade);
+      cidadaos[atualizarPosicaoCidadaoExistente].idade = novaIdade;
+      printf("\nCampo atualizado com sucesso!\n");
+      menuCidadao(contador, cidadaos);
+    } else if(strcmp(atualizarResposta, "U")==0) {
+      printf("\nInforme a nova UF: ");
+      scanf("%s", novaUF);
+      strcpy(cidadaos[atualizarPosicaoCidadaoExistente].uf,novaUF);
+      printf("\nCampo atualizado com sucesso!\n");
+      menuCidadao(contador, cidadaos);
+    } else {
+      printf("\nOpção inválida. Tente novamente. \n");
+      menuAtualizarCadastro(contador, cidadaos);
+    }
   }
 }
